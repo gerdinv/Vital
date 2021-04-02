@@ -49,7 +49,7 @@ class Signup extends Component {
 
     onSubmit(event) {
         event.preventDefault()
-
+        
         const registered = {
             fullname: this.state.fullname,
             username: this.state.username,
@@ -63,8 +63,6 @@ class Signup extends Component {
         }).catch(err =>{
             console.log(err)
         })
-
-
     }
 
     render() {

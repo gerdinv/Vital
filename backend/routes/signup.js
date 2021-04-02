@@ -8,16 +8,12 @@ const bcrypt = require('bcrypt')
 
 router.post('/signup', (req, res) => {
 
-    // const saltPassword = bcrypt.genSalt(10)
-    // const securedPassword = bcrypt.hash(req.body.password, saltPassword)
-
     const newUser = new UserSchema({
         fullname: req.body.fullname,
         username: req.body.username,
         email: req.body.email,
         password: req.body.password
     })
-
 
     var query = req.body.username;
     var query2 = req.body.email
@@ -29,7 +25,7 @@ router.post('/signup', (req, res) => {
             res.json(err)
         } else if (previousUser) {
             res.end("Account already exsits!")
-            console.log('This has already been saved');
+            console.log('An account with this username already exists');
         }
     })
 
@@ -40,8 +36,9 @@ router.post('/signup', (req, res) => {
             res.json(err)
         } else if (previousUser) {
             res.end("Account already exsits!")
-            console.log('This has already been saved');
+            console.log('An account with this email already exists');
         } else {
+            newUser.password = newUser.generateHash(req.body.password)
             newUser.save().then(data => {
                 res.json(data)
             }).catch(err => {

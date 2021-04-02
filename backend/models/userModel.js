@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt')
 const mongoose = require('mongoose')
 
 const User = new mongoose.Schema({
@@ -26,5 +27,13 @@ const User = new mongoose.Schema({
         default: Date.now
     }
 })
+
+User.methods.generateHash = (password) => {
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null)
+}
+
+User.methods.validPassword = (password) => {
+    return bcrypt.compareSync(password, this.password)
+}
 
 module.exports = mongoose.model('User', User)
