@@ -13,18 +13,18 @@ const User = new mongoose.Schema({
         type: String,
         required: true
     },
+    password: {
+        type:String, 
+        required: true,
+        minlength: 7
+    },
+    token: {
+        type: String
+    },
     date: {
         type: Date,
         default: Date.now
     }
 })
-
-UserSchema.methods.generateHash = (password) => {
-    return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null)
-}
-
-UserSchema.methods.validPassword = (password) => {
-    return bcrypt.compareSync(password, this.password)
-}
 
 module.exports = mongoose.model('User', User)
