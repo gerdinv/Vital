@@ -9,7 +9,7 @@ router.post('/signin', (req, res, next) => {
 
     //Look for the user
     UserSchema.findOne({
-        username: req.body.username
+        username: req.body.username.toLowerCase()
     }, (err, user) => {
         if (err) {
             res.json(err)
@@ -20,13 +20,17 @@ router.post('/signin', (req, res, next) => {
             bcrypt.compare(password, user.password, (err, match) => {
                 if (err) {
                     console.log(err)
+                    res.json(err)
                 } else if (match) {
                     //Save the session if the password matches
-                    const userSession = new UserSession({
-                        userId: user._id
-                    });
+                    const userSession = new UserSession()
+                    userSession.userId = user._id 
                     userSession.save().then(data => {
-                        res.json(data)
+                        res.send({
+                            success: true,
+                            token: data._id,
+                            message: 'Valid credentials'
+                        })
                     }).catch(err => {  
                         res.json(err)
                     })

@@ -2,8 +2,8 @@ const mongoose = require('mongoose')
 
 const UserSession = new mongoose.Schema({
     userId: {
-        type: mongoose.Schema.ObjectId,
-        default: -1
+        type: String,
+        default: ''
     },
     timestamp: {
         type: Date,

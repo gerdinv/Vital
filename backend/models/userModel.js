@@ -32,13 +32,4 @@ User.methods.generateHash = (password) => {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null)
 }
 
-User.methods.validPassword = (passwordInput, passwordDB) => {
-    return bcrypt.compare(passwordInput, passwordDB, (err, match) => {
-        if(err) {
-            console.log(err)
-        } 
-        console.log(match)
-    })
-}
-
 module.exports = mongoose.model('User', User)
