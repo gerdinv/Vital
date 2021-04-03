@@ -3,6 +3,11 @@ const router = express.Router()
 const UserSchema = require('../models/userModel')
 const UserSession = require('../models/userSession')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
+
+const dotenv = require('dotenv')
+
+dotenv.config()
 
 router.post('/signin', (req, res, next) => {
     let password = req.body.password
@@ -14,7 +19,10 @@ router.post('/signin', (req, res, next) => {
         if (err) {
             res.json(err)
         } if (!user) {
-            res.end("Username was not found!");
+            res.json({
+                authorized: false,
+                message: "Username does not exist in the database!"
+            })
         } else {
             //Decrypt the password
             bcrypt.compare(password, user.password, (err, match) => {
@@ -22,20 +30,31 @@ router.post('/signin', (req, res, next) => {
                     console.log(err)
                     res.json(err)
                 } else if (match) {
-                    //Save the session if the password matches
+
+//                  Create token for authentication
+                    const id = user._id
+                    const token = jwt.sign({ id }, process.env.JWT_SECRET, {
+                        expiresIn: 300,
+                    })
+
+//                  Save the session if the password matches
                     const userSession = new UserSession()
                     userSession.userId = user._id 
                     userSession.save().then(data => {
-                        res.send({
-                            success: true,
-                            token: data._id,
-                            message: 'Valid credentials'
+                        res.json({
+                            authorized: true,
+                            token: token,
+                            result: user
                         })
                     }).catch(err => {  
                         res.json(err)
                     })
+
                 } else {
-                    res.end("incorrect password")
+                    res.json({
+                        authorized: false,
+                        message: "Invalid password"
+                    })
                 }
             })
         }

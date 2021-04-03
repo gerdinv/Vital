@@ -4,41 +4,30 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import axios from 'axios'
 
-//Ignore container component, Grid also has a property called container
-
-class Signup extends Component {
-    
+class Login extends Component {
 
     constructor() {
         super()
         this.state = {
-            fullname: '',
             username: '',
-            email: '',
-            password: ''
+            password: '',
+            loginStatus: false
         }
-        this.changeFullName = this.changeFullName.bind(this)
+        this.loginStatus = this.setLoginStatus.bind(this)
         this.changeUsername = this.changeUsername.bind(this)
-        this.changeEmail = this.changeEmail.bind(this)
         this.changePassword = this.changePassword.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
     }
-
-    changeFullName(event){
-        this.setState({
-            fullname: event.target.value
-        })
+    
+    setLoginStatus(val){
+        this.setState(({
+            loginStatus: [val]
+        }))
     }
 
-    changeUsername(event) {
+    changeUsername(event){
         this.setState({
             username: event.target.value
-        })
-    }
-
-    changeEmail(event) {
-        this.setState({
-            email: event.target.value
         })
     }
 
@@ -50,47 +39,56 @@ class Signup extends Component {
 
     onSubmit(event) {
         event.preventDefault()
-        
-        const registered = {
-            fullname: this.state.fullname,
+
+        const signin = {
             username: this.state.username,
-            email: this.state.username,
             password: this.state.password
         }
 
-        axios.post('http://localhost:4000/app/signup', registered).then(res => {
-            console.log(res.data)
-            // window.location = '/signin'
-        }).catch(err =>{
+        axios.post('http://localhost:4000/app/signin', signin).then(res => {
+            if(!res.data.authorized) {
+                this.setLoginStatus(false)
+            } else {
+                this.setLoginStatus(true)
+            }
+            // localStorage.setItem('token', res.data.token)
+            console.log(res.data.token)
+            console.log(this.state.loginStatus)
+            
+        }).catch(err => {
             console.log(err)
         })
     }
 
     render() {
         return (
-            <form onSubmit={this.onSubmit}>
-                <Grid container justify="center" alignContent="center" alignItems="center" spacing={5}>
-                    <Grid container item justify="center" xs={12} >
-                        <TextField id="standard-basic" label="Fullname" style={{ minWidth: '17%' }} onChange={this.changeFullName} value={this.state.fullname} />
-                    </Grid>
+            <form onSubmit={this.onSubmit} setLoginStatus={this.setLoginStatus}>
+                <Grid container justify="center" alignItems="center" spacing={2}>
                     <Grid container item justify="center" xs={12} >
                         <TextField id="standard-basic" label="Username" style={{ minWidth: '17%' }} onChange={this.changeUsername} value={this.state.username} />
-                    </Grid>
-                    <Grid container item justify="center" xs={12} >
-                        <TextField id="standard-basic" label="Email" style={{ minWidth: '17%' }} onChange={this.changeEmail} value={this.state.email} />
                     </Grid>
                     <Grid container item justify="center" xs={12} >
                         <TextField id="standard-basic" label="Password" style={{ minWidth: '17%' }} onChange={this.changePassword} value={this.state.password} />
                     </Grid>
                     <Grid container item justify="center" xs={12} >
+                        <Button style={{ minWidth: '17%' }}
+                            variant="outlined" color="primary" >
+                            signup</Button>
+                    </Grid>
+                    <Grid container item justify="center" xs={12} >
                         <Button type="submit" value="Submit" style={{ minWidth: '17%' }}
                             variant="contained" color="primary" >
-                            SignUp</Button> 
+                            signin</Button>
                     </Grid>
                 </Grid>
+                
+                {this.state.loginStatus && (
+                    <Button variant="contained" color="secondary">HEYYY</Button>
+                )}
+          
             </form>
         );
     }
 }
 
-export default Signup;
+export default Login;
