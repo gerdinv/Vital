@@ -49,7 +49,7 @@ class Signup extends Component {
 
     onSubmit(event) {
         event.preventDefault()
-        
+
         const registered = {
             fullname: this.state.fullname,
             username: this.state.username,
@@ -73,7 +73,7 @@ class Signup extends Component {
                         <TextField id="standard-basic" label="Fullname" style={{ minWidth: '17%' }} onChange={this.changeFullName} value={this.state.fullname} />
                     </Grid>
                     <Grid container item justify="center" xs={12} >
-                        <TextField id="standard-basic" label="Username" style={{ minWidth: '17%' }} onChange={this.changeUsername} value={this.state.username} />
+                        <TextField id="standard-basic" label="Username" style={{ minWidth: '17%' }}          />
                     </Grid>
                     <Grid container item justify="center" xs={12} >
                         <TextField id="standard-basic" label="Email" style={{ minWidth: '17%' }} onChange={this.changeEmail} value={this.state.email} />
