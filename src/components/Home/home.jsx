@@ -1,27 +1,10 @@
-import React, { Component, useEffect } from 'react'
-import axios from 'axios'
+import React from 'react'
+import { Redirect } from 'react-router';
 
-
-function Home() {
-    useEffect(() => {
-        (
-            async () => {
-                axios.defaults.withCredentials = true;
-                axios.get('http://localhost:4000/app/getUserInfo', {withCredentials: true}).then(res => {
-                    if (!res.data.authorized) {
-                        console.log(res)
-                    } else {
-                        localStorage.setItem("token", res.data.token)
-                    }
-                    console.log(res.data)
-                }).catch(err => {
-                    console.log(err)
-                })
-            }
-        )();
-    })
+function Home (props) {
+    
     return (
-        <h1>hey</h1>
+        <h1> {props.name ? "Welcome " + props.name : "You must log in!"}</h1>
     );
 }
 

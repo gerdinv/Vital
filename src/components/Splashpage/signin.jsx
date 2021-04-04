@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import axios from 'axios'
 import { Redirect } from 'react-router';
-
+import Cookies from 'js-cookie'
 
 function Login () {
     const [username, setUsername] = useState('')
@@ -34,24 +34,14 @@ function Login () {
         })
 
         setRedirect(true)
-        
     }
 
     if (redirect) {
         return <Redirect to='/home' />
     }
 
-    // userAuthenticated = () => {
-    //     axios.get('http://localhost:4000/app/authorizedUser', {
-    //         headers: {
-    //             "token": localStorage.getItem("token"),
-    //         },
-    //     }).then((res) => {
-    //         console.log(res)
-    //     })
-    // }
-
     return (
+        console.log("HEY"),
         <form onSubmit={submit}>
             <Grid container justify="center" alignItems="center" spacing={2}>
                 <Grid container item justify="center" xs={12} >
@@ -71,8 +61,6 @@ function Login () {
                         signin</Button>
                 </Grid>
             </Grid>
-            {/* <Button variant="contained" color="secondary" onClick={this.userAuthenticated}>HEYYY</Button> */}
-
         </form>
     );
 }
