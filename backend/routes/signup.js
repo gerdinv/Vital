@@ -6,7 +6,7 @@ router.post('/signup', (req, res) => {
 
     const newUser = new UserSchema({
         fullname: req.body.fullname,
-        username: req.body.username.toLowerCase(),
+        username: req.body.username,
         email: req.body.email,
         password: req.body.password
     })

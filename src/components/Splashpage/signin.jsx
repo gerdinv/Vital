@@ -1,94 +1,80 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import Grid from '@material-ui/core/Grid'
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import axios from 'axios'
+import { Redirect } from 'react-router';
 
-class Login extends Component {
 
-    constructor() {
-        super()
-        this.state = {
-            username: '',
-            password: '',
-            loginStatus: false
-        }
-        this.loginStatus = this.setLoginStatus.bind(this)
-        this.changeUsername = this.changeUsername.bind(this)
-        this.changePassword = this.changePassword.bind(this)
-        this.onSubmit = this.onSubmit.bind(this)
-    }
-    
-    setLoginStatus(val){
-        this.setState(({
-            loginStatus: [val]
-        }))
-    }
+function Login () {
+    const [username, setUsername] = useState('')
+    const [password, setPassword] = useState('')
+    const [redirect, setRedirect] = useState(false)
 
-    changeUsername(event){
-        this.setState({
-            username: event.target.value
-        })
-    }
 
-    changePassword(event) {
-        this.setState({
-            password: event.target.value
-        })
-    }
-
-    onSubmit(event) {
-        event.preventDefault()
+    const submit = async (e) => {
+        e.preventDefault()
 
         const signin = {
-            username: this.state.username,
-            password: this.state.password
+            username,
+            password
         }
 
-        axios.post('http://localhost:4000/app/signin', signin).then(res => {
-            if(!res.data.authorized) {
-                this.setLoginStatus(false)
+        axios.defaults.withCredentials = true
+
+        await axios.post('http://localhost:4000/app/signin', signin, {withCredentials: true}).then(res => {
+            if (!res.data.authorized) {
+
             } else {
-                this.setLoginStatus(true)
+                localStorage.setItem("token", res.data.token)
             }
-            // localStorage.setItem('token', res.data.token)
-            console.log(res.data.token)
-            console.log(this.state.loginStatus)
-            
+            console.log(res.data)
         }).catch(err => {
             console.log(err)
         })
+
+        setRedirect(true)
+        
     }
 
-    render() {
-        return (
-            <form onSubmit={this.onSubmit} setLoginStatus={this.setLoginStatus}>
-                <Grid container justify="center" alignItems="center" spacing={2}>
-                    <Grid container item justify="center" xs={12} >
-                        <TextField id="standard-basic" label="Username" style={{ minWidth: '17%' }} onChange={this.changeUsername} value={this.state.username} />
-                    </Grid>
-                    <Grid container item justify="center" xs={12} >
-                        <TextField id="standard-basic" label="Password" style={{ minWidth: '17%' }} onChange={this.changePassword} value={this.state.password} />
-                    </Grid>
-                    <Grid container item justify="center" xs={12} >
-                        <Button style={{ minWidth: '17%' }}
-                            variant="outlined" color="primary" >
-                            signup</Button>
-                    </Grid>
-                    <Grid container item justify="center" xs={12} >
-                        <Button type="submit" value="Submit" style={{ minWidth: '17%' }}
-                            variant="contained" color="primary" >
-                            signin</Button>
-                    </Grid>
-                </Grid>
-                
-                {this.state.loginStatus && (
-                    <Button variant="contained" color="secondary">HEYYY</Button>
-                )}
-          
-            </form>
-        );
+    if (redirect) {
+        return <Redirect to='/home' />
     }
+
+    // userAuthenticated = () => {
+    //     axios.get('http://localhost:4000/app/authorizedUser', {
+    //         headers: {
+    //             "token": localStorage.getItem("token"),
+    //         },
+    //     }).then((res) => {
+    //         console.log(res)
+    //     })
+    // }
+
+    return (
+        <form onSubmit={submit}>
+            <Grid container justify="center" alignItems="center" spacing={2}>
+                <Grid container item justify="center" xs={12} >
+                    <TextField id="standard-basic" label="Username" style={{ minWidth: '17%' }} onChange={e => setUsername(e.target.value)} />
+                </Grid>
+                <Grid container item justify="center" xs={12} >
+                    <TextField id="standard-basic" label="Password" style={{ minWidth: '17%' }} onChange={e => setPassword(e.target.value)} />
+                </Grid>
+                <Grid container item justify="center" xs={12} >
+                    <Button style={{ minWidth: '17%' }}
+                        variant="outlined" color="primary" >
+                        signup</Button>
+                </Grid>
+                <Grid container item justify="center" xs={12} >
+                    <Button type="submit" value="Submit" style={{ minWidth: '17%' }}
+                        variant="contained" color="primary" >
+                        signin</Button>
+                </Grid>
+            </Grid>
+            {/* <Button variant="contained" color="secondary" onClick={this.userAuthenticated}>HEYYY</Button> */}
+
+        </form>
+    );
 }
 
 export default Login;

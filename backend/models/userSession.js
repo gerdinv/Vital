@@ -5,13 +5,17 @@ const UserSession = new mongoose.Schema({
         type: String,
         default: ''
     },
+    authorized: {
+        type: Boolean,
+        default: false
+    },
+    token: {
+        type: String,
+        default: ''
+    },
     timestamp: {
         type: Date,
         default: Date.now()
-    },
-    isDeleted: {
-        type: Boolean,
-        default: false
     }
 })
 

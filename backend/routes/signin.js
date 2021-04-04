@@ -14,7 +14,7 @@ router.post('/signin', (req, res, next) => {
 
     //Look for the user
     UserSchema.findOne({
-        username: req.body.username.toLowerCase()
+        username: req.body.username
     }, (err, user) => {
         if (err) {
             res.json(err)
@@ -34,12 +34,17 @@ router.post('/signin', (req, res, next) => {
 //                  Create token for authentication
                     const id = user._id
                     const token = jwt.sign({ id }, process.env.JWT_SECRET, {
-                        expiresIn: 300,
+                        expiresIn: 3600,
                     })
 
+                    res.cookie('token', token, { maxAge: 3600000, httpOnly: true }) // 1 hour
+
 //                  Save the session if the password matches
-                    const userSession = new UserSession()
-                    userSession.userId = user._id 
+                    const userSession = new UserSession({
+                        userId: user._id,
+                        authorized: true,
+                        token: token,
+                    })
                     userSession.save().then(data => {
                         res.json({
                             authorized: true,
