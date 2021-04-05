@@ -31,9 +31,15 @@ function CreatePost() {
     return <Redirect to="/signin" />;
   }
 
-  const updateGenre = (e) => {
-      
-    setGenre(e)
+  let genreBox;
+  if(genre === 'primary') {
+      genreBox = 'Social'
+  } else if (genre === "success") {
+        genreBox = 'Business'
+  } else if (genre === "warning") {
+        genreBox = 'Disturbing'
+  } else {
+      genreBox = "Important"
   }
 
   return (
@@ -57,7 +63,7 @@ function CreatePost() {
                 id="dropdown-basic-button"
                 title="Genre"
                 className="mx-3"
-                onSelect={updateGenre}
+                onSelect={(e) => setGenre(e)}
               >
                 <Dropdown.Item eventKey="primary">
                   <Badge variant="primary">Social</Badge>
@@ -83,7 +89,7 @@ function CreatePost() {
                 }}
                 className="m-auto"
               >
-                Social
+                {genreBox}
               </Badge>
             </Row>
 
