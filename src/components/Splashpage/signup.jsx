@@ -29,8 +29,6 @@ function Signup () {
         }).catch(err => {
             console.log(err)
         })
-
-        
     }
 
     if(redirect){

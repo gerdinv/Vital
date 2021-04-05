@@ -26,6 +26,4 @@ module.exports = (req, res, next) => {
         console.log("NO COOKIE")
         res.send("No cookie! Go sign in")
     }
-
-    
 }

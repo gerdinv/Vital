@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 const dotenv = require('dotenv')
+var cookieSession = require('cookie-session')
 
 dotenv.config()
 
@@ -33,9 +34,20 @@ router.post('/signin', (req, res, next) => {
 
 //                  Create token for authentication
                     const id = user._id
+                    // const secret = bcrypt.hashSync(process.env.JWT_SECRET, bcrypt.genSaltSync(10), null)
+                    // console.log('New secret: ' + secret)
                     const token = jwt.sign({ id }, process.env.JWT_SECRET, {
                         expiresIn: 3600,
+                    }) 
+
+                    cookieSessions = cookieSession({
+                        name: 'session',
+                        keys: [process.env.JWT_SECRET],
+                        maxAge: 1 * 60 * 60 * 1000, //1 hour
+                        httpOnly: true
                     })
+
+                    console.log("Cookie session " + cookieSessions)
 
                     res.cookie('token', token, { maxAge: 3600000, httpOnly: true }) // 1 hour
 

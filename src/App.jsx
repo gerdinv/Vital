@@ -4,6 +4,7 @@ import Signin from './components/Splashpage/signin'
 import Home from './components/Home/home'
 import { BrowserRouter, Route} from "react-router-dom";
 import NavigationBar from './components/Home/navigationBar'
+import CreatePost from './components/Posts/createPost'
 import axios from 'axios'
 
 function App () {
@@ -19,19 +20,21 @@ function App () {
                 });
 
                 const content = await response.json()
+                console.log(content)
                 setName(content.user.username)
             }
         )();
     }, [])
 
     return (
-        <BrowserRouter>
-            <NavigationBar name={name} setName={setName}/>
-            <Route exact path="/" />
-            <Route path="/signin" component={Signin} />
-            <Route path="/signup" component={Signup}/>
-            <Route path="/home" component={() => <Home name={name}/>} />
-        </BrowserRouter>
+      <BrowserRouter>
+        <NavigationBar name={name} setName={setName} />
+        <Route exact path="/" />
+        <Route path="/signin" component={Signin} />
+        <Route path="/signup" component={Signup} />
+        <Route path="/home" component={() => <Home name={name} />} />
+        <Route path="/post" component={CreatePost} />
+      </BrowserRouter>
     );
 }
 
