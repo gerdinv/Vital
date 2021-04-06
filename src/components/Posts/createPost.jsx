@@ -20,12 +20,12 @@ function CreatePost() {
   const [genre, setGenre] = useState("primary")
   const [redirect, setRedirect] = useState(false);
 
-  const submit = async (e) => {
-    e.preventDefault();
-    console.log("Title: " + title)
-    console.log("Description: " + description)
-    console.log("Genre: " + genre)
-  };
+//   const submit = async (e) => {
+//     e.preventDefault();
+//     console.log("Title: " + title)
+//     console.log("Description: " + description)
+//     console.log("Genre: " + genre)
+//   };
 
   if (redirect) {
     return <Redirect to="/signin" />;
@@ -35,11 +35,33 @@ function CreatePost() {
   if(genre === 'primary') {
       genreBox = 'Social'
   } else if (genre === "success") {
-        genreBox = 'Business'
+      genreBox = 'Business'
   } else if (genre === "warning") {
-        genreBox = 'Disturbing'
+      genreBox = 'Disturbing'
   } else {
       genreBox = "Important"
+  }
+
+  const submit = async (e) => {
+      e.preventDefault()
+
+      const postDetails = {
+          title,
+          genre,
+          description
+      }
+
+      await axios.post("http://localhost:4000/app/createPost", postDetails).then((res) => {
+          if(res.created){
+              console.log("POST SAVED!: ")
+          } else {
+              console.log("ERROR SAVING POST")
+          }
+
+          console.log(res)
+      }).catch((err) => {
+        console.log("Error saving post to DB: " + err)
+      });
   }
 
   return (
@@ -78,7 +100,7 @@ function CreatePost() {
                   <Badge variant="danger">Important</Badge>
                 </Dropdown.Item>
               </DropdownButton>
-
+            
               <Badge
                 variant={genre}
                 style={{
@@ -98,6 +120,7 @@ function CreatePost() {
               aria-label="With textarea"
               onChange={(e) => setDescription(e.target.value)}
               className="bx my-2"
+              style={{height: "200px"}}
             />
             <Button
               variant="outline-primary"

@@ -21,7 +21,9 @@ function App () {
 
                 const content = await response.json()
                 console.log(content)
-                setName(content.user.username)
+                if (content.user.username !== undefined){
+                    setName(content.user.username);
+                } 
             }
         )();
     }, [])

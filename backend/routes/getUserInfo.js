@@ -12,8 +12,7 @@ dotenv.config()
 router.get('/getUserInfo', verify, (req, res, next) => {
     cookie = req.headers.cookie
     token = cookie.substring(6)
-    console.log(cookie)
-
+    
     UserSession.findOne({
         token: token
     }, (err, userSesh) => {
