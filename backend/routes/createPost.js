@@ -3,6 +3,8 @@ const router = express.Router()
 const CreatePostSchema = require('../models/userPost')
 const UserSession = require('../models/userSession')
 const verify = require('./verifyToken')
+const UserSchema = require("../models/userModel");
+
 
 router.post('/createPost', verify, (req, res, next) => {
     
@@ -14,32 +16,36 @@ router.post('/createPost', verify, (req, res, next) => {
     })
 
     const cookie = req.headers.cookie
-    const token = cookie.substring(6)
+    const token = cookie.substring(442)
     
-    UserSession.findOne({
-        token: token
-    }, (err, userSesh) => {
-        console.log(req.headers)
-        if(err) {
-            res.send("Error: " + err)
-        } else if (!userSesh){
-            res.send("User session not found aka token not in DB")
+    UserSchema.findOne(
+      {
+        _id: req.userAuthId,
+      },
+      (err, user) => {
+        if (err) {
+          res.send("Error: " + err);
         } else {
-            newPost.userId = userSesh.userId
-            newPost.save().then(data => {
-                res.send({
-                    created: true,
-                    message: "Post was successfully created and stored inside of the Database!",
-                    data: data
-                })
-            }).catch(err => {
-                res.send({
-                    message: "Error saving the post to the DB",
-                    error: err
-                })
+          newPost.userId = req.userAuthId;
+          newPost
+            .save()
+            .then((data) => {
+              res.send({
+                created: true,
+                message:
+                  "Post was successfully created and stored inside of the Database!",
+                data: data,
+              });
             })
+            .catch((err) => {
+              res.send({
+                message: "Error saving the post to the DB",
+                error: err,
+              });
+            });
         }
-    })
+      }
+    );
 })
 
 module.exports = router

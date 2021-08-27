@@ -1,52 +1,83 @@
-import React, { useState } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import { Redirect } from 'react-router';
 import axios from 'axios'
+import { UserContext } from "../../UserContext";
+import { useHistory } from "react-router-dom";
 
 
-function NavigationBar(props) {
-    const [redirect, setRedirect] = useState(false)
 
-    const onLogout = () => {
-        axios.get('http://localhost:4000/app/logout').then(res => {
-            setRedirect(true)
-            console.log(res.data)
-        }).catch(err => {
-            console.log('Error logging out: ' + err)
-        })
-    }
 
-    if (redirect) {
-        return <Redirect to='/' />
-    }
+function NavigationBar() {
+    let history = useHistory();
 
-    let menu;
+  const [redirect, setRedirect] = useState(false);
+  const {user, setUser} = useContext(UserContext);
 
-    if(props.name === '') {
-        menu = (
-            <Nav className="ml-auto">
-                <Nav.Link href="signup">Register</Nav.Link>
-                <Nav.Link href="signin">Login</Nav.Link>
-            </Nav>
-        )
-    } else {
-        menu = (
-            <Nav className="ml-auto">
-                <Nav.Link href="home">Home</Nav.Link>
-                <Nav.Link href="messages">Messages</Nav.Link>
-                <Nav.Link href="post">Create Post</Nav.Link>
-                <Nav.Link href="" onClick={onLogout}>Logout</Nav.Link>
-            </Nav>
-        )
-    }
-    return (
-        <Navbar bg="dark" variant="dark">
-            <Navbar.Brand href="#home">Navbar</Navbar.Brand>
-            {menu}
-        </Navbar>
+  const onLogout = () => {
+    axios
+      .get("http://localhost:4000/app/logout")
+      .then((res) => {
+        setRedirect(true);
+        console.log(res.data);
+        setUser(null)
+        history.push("/post"); // or redirect
+      })
+      .catch((err) => {
+        console.log("Error logging out: " + err);
+      });
+  };
+
+  if (redirect) {
+    return <Redirect to="/" />;
+  }
+
+  function goToHome() {
+    history.push("/home");
+  }
+
+  function goToMessages() {
+    history.push("/messages");
+  }
+
+  function goToPost() {
+    history.push("/post");
+  }
+
+  let menu;
+
+  if (user === null) {
+    menu = (
+      <Nav className="ml-auto">
+        <Nav.Link href="signup">Register</Nav.Link>
+        <Nav.Link href="signin">Login</Nav.Link>
+      </Nav>
     );
-
+  } else {
+    menu = (
+      <Nav className="ml-auto">
+        <Nav.Link href="#" onClick={goToHome}>
+          Home
+        </Nav.Link>
+        <Nav.Link href="#" onClick={goToMessages}>
+          Messages
+        </Nav.Link>
+        <Nav.Link href="#" onClick={goToPost}>
+          Create Post
+        </Nav.Link>
+        <Nav.Link href="#" onClick={onLogout}>
+          Logout
+        </Nav.Link>
+      </Nav>
+    );
+  }
+  return (
+    <Navbar bg="dark" variant="dark">
+      <Navbar.Brand href="#home">Navbar</Navbar.Brand>
+      {menu}
+    </Navbar>
+  );
 }
 
 export default NavigationBar;

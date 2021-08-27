@@ -31,29 +31,37 @@ router.post('/signin', (req, res, next) => {
 
 //                  Create token for authentication
                     const id = user._id
-                    const token = jwt.sign({ id }, process.env.JWT_SECRET, {
+                    const userAuth = {user_id: id}
+                    const token = jwt.sign(userAuth , process.env.JWT_SECRET, {
                         expiresIn: 3600,
                     }) 
 
+                    console.log("ID from successful signin: " + id);
                     res.cookie('token', token, { maxAge: 3600000, httpOnly: true }) // 1 hour
-
-//                  Save the session if the password matches
-                    const userSession = new UserSession({
-                        userId: user._id,
+                    
+                    res.json({
+                        user: user,
                         authorized: true,
                         token: token,
-                    })
+                    });
+                    
+//                  Save the session if the password matches
+                    // const userSession = new UserSession({
+                    //     userId: user._id,
+                    //     authorized: true,
+                    //     token: token,
+                    // })
 
 //                  Save the entry into the DB
-                    userSession.save().then(data => {
-                        res.json({
-                            authorized: true,
-                            token: token,
-                            result: user
-                        })
-                    }).catch(err => {  
-                        res.json(err)
-                    })
+                    // userSession.save().then(data => {
+                    //     res.json({
+                    //         user: user,
+                    //         authorized: true,
+                    //         token: token,
+                    //     })
+                    // }).catch(err => {  
+                    //     res.json(err)
+                    // })
                 } else {
                     res.json({
                         authorized: false,

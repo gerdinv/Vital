@@ -6,6 +6,7 @@ var logoutRouter = require('./logout')
 var authTestRouter = require('./authTest')
 var getUserInfo = require('./getUserInfo')
 var createPost = require('./createPost')
+var getAllPosts = require('./getAllPosts')
 
 const corsOptions = {
     origin: 'http://localhost:3000',
@@ -22,4 +23,5 @@ module.exports = function(app) {
     app.use('/app', authTestRouter)
     app.use('/app', getUserInfo)
     app.use('/app', createPost)
+    app.use('/app', getAllPosts)
 }

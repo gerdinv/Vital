@@ -1,31 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import axios from "axios";
 import { Redirect } from "react-router";
+import { UserContext } from "../../UserContext";
+
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [redirect, setRedirect] = useState(false);
+  const { user, setUser } = useContext(UserContext);
 
   const submit = async (e) => {
     e.preventDefault();
 
+    console.log("SUBMIT")
     const signin = {
       username,
       password,
     };
 
-    await axios
+    axios.defaults.withCredentials = true;
+    const user = await axios
       .post("http://localhost:4000/app/signin", signin)
       .then((res) => {
         if (!res.data.authorized) {
+          console.log("Not authorized: " + res.data)
         } else {
-          // localStorage.setItem("token", res.data.token)
+          setUser(res.data.user)
+          console.log("RES.Data: " + JSON.stringify(res.data.result))
+          console.log("IS THIS: " + user);
         }
-        console.log(res.data);
       })
       .catch((err) => {
         console.log(err);

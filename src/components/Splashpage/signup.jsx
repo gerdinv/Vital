@@ -27,6 +27,7 @@ function Signup () {
             setRedirect(true)
             console.log(res.data)
         }).catch(err => {
+            console.log("HEY")
             console.log(err)
         })
     }
