@@ -14,7 +14,10 @@ router.get('/getAllPosts', verify, async (req, res) => {
 
   try {
     const posts = await PostSchema.find();
-    res.json(posts);
+    res.json({
+      message: "Success",
+      posts: posts
+    });
   } catch (err) {
     console.log(err);
     res.status(500).send();

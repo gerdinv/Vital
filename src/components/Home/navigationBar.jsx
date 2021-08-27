@@ -22,7 +22,7 @@ function NavigationBar() {
         setRedirect(true);
         console.log(res.data);
         setUser(null)
-        history.push("/post"); // or redirect
+        // history.push("/post"); // or redirect
       })
       .catch((err) => {
         console.log("Error logging out: " + err);
@@ -45,6 +45,10 @@ function NavigationBar() {
     history.push("/post");
   }
 
+  function goToSettings() {
+    history.push("/settings");
+  }
+
   let menu;
 
   if (user === null) {
@@ -65,6 +69,9 @@ function NavigationBar() {
         </Nav.Link>
         <Nav.Link href="#" onClick={goToPost}>
           Create Post
+        </Nav.Link>
+        <Nav.Link href="#" onClick={goToSettings}>
+          Settings
         </Nav.Link>
         <Nav.Link href="#" onClick={onLogout}>
           Logout

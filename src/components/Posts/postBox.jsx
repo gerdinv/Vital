@@ -14,10 +14,9 @@ function Post(props) {
           <Row>
             <Col xs={9}>
               <Badge variant={props.feature}>Social</Badge>{" "}
-              <Card.Title>New scammers in town!</Card.Title>
+              <Card.Title>{props.title}</Card.Title>
               <Card.Text>
-                Some quick example text to build on the card title and make up
-                the bulk of the card's content.
+                {props.description}
               </Card.Text>
               <Button variant="primary">Go somewhere</Button>
             </Col>

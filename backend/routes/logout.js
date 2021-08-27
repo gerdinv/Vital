@@ -2,16 +2,12 @@ const express = require('express')
 const { deleteOne } = require('../models/userSession')
 const router = express.Router()
 const UserSession = require('../models/userSession')
+const verify = require("./verifyToken");
 
-router.get('/logout', (req, res, next) => {
-    cookie = req.headers.cookie
-    token = cookie.substring(442)
+router.get('/logout', verify, (req, res, next) => {
+    token = req.userAuthToken
     console.log("TOKEN BEING REMOVED: " + token)
-
-    UserSession.findOneAndDelete({token: token}).then(function(){
-        res.clearCookie("token").send("cookies cleared");
-    })
-    
+    res.clearCookie("token").send("cookies cleared");
 })
 
 module.exports = router

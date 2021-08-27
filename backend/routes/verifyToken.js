@@ -24,6 +24,7 @@ if(cookie !== undefined) {
               error: err,
             });
           } else {
+            req.userAuthToken = token
             req.userAuthId = decoded.user_id; // This will be passed to any function that uses this middleware
             next()
           }

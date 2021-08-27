@@ -13,18 +13,16 @@ import DropdownButton from "react-bootstrap/DropdownButton"
 import Dropdown from "react-bootstrap/Dropdown"
 import Badge from "react-bootstrap/Badge";
 import { UserContext } from "../../UserContext";
+import { useHistory } from "react-router-dom";
+
 
 
 function CreatePost() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [genre, setGenre] = useState("primary")
-  const [redirect, setRedirect] = useState(false);
+  const [redirect, setRedirect] = useState(false)
   const { user, setUser } = useContext(UserContext);
-
-  if (redirect) {
-    return <Redirect to="/signin" />;
-  }
 
   let genreBox;
   if(genre === 'primary') {
@@ -36,6 +34,8 @@ function CreatePost() {
   } else {
       genreBox = "Important"
   }
+
+  // let history = useHistory();
 
   const submit = async (e) => {
       e.preventDefault()
@@ -49,6 +49,7 @@ function CreatePost() {
       await axios.post("http://localhost:4000/app/createPost", postDetails).then((res) => {
           if(res.data.created){
               console.log("POST SAVED!")
+              setRedirect(true)
           } else {
               console.log("ERROR SAVING POST")
           }
@@ -57,6 +58,10 @@ function CreatePost() {
         console.log("Error saving post to DB: " + err)
       });
   }
+
+    if (redirect) {
+      return <Redirect to="/home" />;
+    }
 
   let menu;
   

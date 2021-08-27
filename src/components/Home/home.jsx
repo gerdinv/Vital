@@ -11,6 +11,18 @@ function Home() {
     const [posts, setPosts] = useState([]);
     const { user, setUser } = useContext(UserContext);
 
+    useEffect(() => {
+      (async () => {
+        axios.defaults.withCredentials = true;
+        const response = await fetch("http://localhost:4000/app/getAllPosts", {
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        });
+        const content = await response.json();
+        if (content.message === "Success") setPosts(content.posts.reverse());
+      })();
+    }, []);
+
   let menu;
 
   if (user !== null) {
@@ -28,7 +40,10 @@ function Home() {
       <Row>
         <h1> {user !== null ? "Welcome " + user.username : "You must log in!"}</h1>
       </Row>
-      {menu}
+      {posts.map((post, index) => (
+        <Post title={post.title} feature={post.genre} description={post.description}/>
+      ))}
+      {/* {menu} */}
     </Container>
   );
 }
